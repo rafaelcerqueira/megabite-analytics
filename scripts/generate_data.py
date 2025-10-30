@@ -87,6 +87,24 @@ def setup_base_data(conn):
     print("Setting up base data...")
     cursor = conn.cursor()
     
+    # Adicionando a verificação do brand para correção de erros na localização de brand_id
+    print("Verificando brand...")
+    cursor.execute("SELECT id, name FROM brands WHERE id = %s", (BRAND_ID,))
+    brand_result = cursor.fetchone()
+    
+    if not brand_result:
+        print(f"Brand {BRAND_ID} não encontrado. Criando...")
+        cursor.execute(
+            "INSERT INTO brands (id, name) VALUES (%s, %s)",
+            (BRAND_ID, 'MegaBite Restaurants')
+        )
+        conn.commit()
+        print(f"✓ Brand {BRAND_ID} criado")
+    else:
+        print(f"✓Brand encontrado: {brand_result}")
+        
+    # fim do trecho para verificação ----
+        
     # Sub-brands
     sub_brands = ['Challenge Burger', 'Challenge Pizza', 'Challenge Sushi']
     sub_brand_ids = []
