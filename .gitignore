@@ -65,3 +65,6 @@ build/
 venv/
 env/
 ENV/
+
+
+frontend/node_modules/
