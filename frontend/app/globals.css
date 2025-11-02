@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Cores de fundo (dark theme suavizado) */
+    --bg-primary: #2a2d45;
+    --bg-secondary: #35385c;
+    --bg-tertiary: #414470;
+    --bg-card: #2f3250;
+    --bg-header: #26293f;
+
+    /* Cores de texto */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-accent: #ffffff;
+
+    /* Cores de destaque gastronômicas */
+    --accent-pink-500: #ec4899;
+    --accent-pink-400: #f472b6;
+    --accent-pink-600: #db2777;
+
+    --accent-purple-500: #a855f7;
+    --accent-purple-400: #c084fc;
+    --accent-purple-600: #9333ea;
+
+    --accent-green-500: #10b981;
+    --accent-green-400: #34d399;
+    --accent-green-600: #059669;
+
+    --accent-orange-500: #f97316;
+    --accent-orange-400: #fdba74;
+    --accent-orange-600: #ea580c;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Gradientes customizados */
+.bg-gradient-berry {
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+}
+
+.bg-gradient-citrus {
+  background: linear-gradient(135deg, #f97316, #10b981);
+}
+
+.bg-gradient-mint {
+  background: linear-gradient(135deg, #10b981, #3b82f6);
+}
+
+.bg-gradient-kitchen {
+  background: linear-gradient(135deg, #f97316, #ec4899, #a855f7);
+}
+
+/* Animações customizadas */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Efeito glassmorphism */
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+/* Sombras customizadas */
+.shadow-kitchen {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }

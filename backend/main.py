@@ -167,3 +167,63 @@ if __name__ == "__main__":
         port=int(os.getenv("API_PORT", 8000)),
         reload=os.getenv("API_RELOAD", "True").lower() == "true"
     )
+
+#Tendência de vendas ao longo do tempo
+@app.get("/api/analytics/sales-trend")
+async def sales_trend(
+    db: Session = Depends(get_db),
+    period: str = "30d",
+    channel_id: int = None
+):
+    try:
+        if period == "7d":
+            date_filter = "INTERVAL '7 days'"
+            group_by = "DATE(s.created_at)"
+        elif period == "90d":
+            date_filter = "INTERVAL '90 days'"
+            group_by = "DATE(s.created_at)"
+        else:
+            date_filter = "INTERVAL '30 days'"
+            group_by = "DATE(s.created_at)"
+        
+        # query base
+        query = f"""
+            SELECT
+                {group_by} as date,
+                COUNT(*) as sales_count,
+                SUM(s.total_amount) as total_revenue,
+                AVG(s.total_amount) as avg_ticket
+            FROM sales s
+            WHERE s.created_at >= NOW() - {date_filter}
+                AND s.sale_status_desc = 'COMPLETED'
+        """
+        
+        if channel_id:
+            query += f" AND s.channel_id = {channel_id}"
+            
+        query += f" GROUP BY {group_by} ORDER BY date"
+        
+        result = db.execute(text(query))
+        rows = result.fetchall()
+        
+        trend_data = []
+        for row in rows:
+            trend_data.append({
+                "date": row[0].strftime("%Y-%m-%d"),
+                "sales": row[1],
+                "revenue": float(row[2]) if row[2] else 0,
+                "avg_ticket": float(row[3]) if row[3] else 0,
+                
+            })
+            
+        return {
+            "period": period,
+            "channel_id": channel_id,
+            "data": trend_data,
+            "total_days": len(trend_data),
+            "total_sales": sum(item["sales"] for item in trend_data),
+            "total_revenue": sum(item["revenue"] for item in trend_data)
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching sales trend: {str(e)}")
