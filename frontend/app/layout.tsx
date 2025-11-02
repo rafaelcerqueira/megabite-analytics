@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" className="dark"> {/* ← Força dark mode */}
+    <html lang="pt-BR" className="dark"> {/* dark mode */}
       <body className={`${inter.className} dark:bg-bg-primary`}>
         {children}
       </body>
